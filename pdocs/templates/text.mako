@@ -226,13 +226,6 @@ ${function(f, True)}
     % endfor
 % endif
 
-% if inst_vars:
-${h4('Instance variables')}
-% for v in inst_vars:
-${variable(v)}
-
-% endfor
-% endif
 % if methods:
 ${h4('Methods')}
 % for m in methods:
