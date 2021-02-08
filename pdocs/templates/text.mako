@@ -47,10 +47,10 @@ ${long_desc}
     % if params:
 **Parameters:**
 
-| Name | Type | Description | Default |
-|---|---|---|---|
+| Name | Description |
+|---|---|
         % for p in params:
-| ${p.arg_name} | ${p.type_name} | ${p.description.replace('\n', '<br>')} | ${p.default} |
+| ${p.arg_name} | ${p.description.replace('\n', '<br>')} |
         % endfor
     % endif
 
@@ -60,8 +60,13 @@ ${long_desc}
 
 | Type | Description |
 |---|---|
-## TODO: handle multiline descriptions
+      % if isinstance(ret, list):
+        % for p in ret:
+| ${p.type_name} | ${p.description.replace('\n', '<br>')} |
+        % endfor
+      % else:
 | ${ret.type_name} | ${ret.description.replace('\n', '<br>')} |
+      % endif
     % endif
     % if raises:
 
@@ -120,15 +125,56 @@ class ${cls.name}(
 ```
 
 % if cls.parsed_docstring:
-    % if cls.parsed_docstring.params:
-${h4("Attributes")}
+     <%
+        cl_short_desc = cls.parsed_docstring.short_description
+        cls_long_desc = cls.parsed_docstring.long_description
+        cls_params = cls.parsed_docstring.params
+        cls_call_args = cls.parsed_docstring.call_args
+        cls_call_ret = cls.parsed_docstring.call_returns
+    %>
+    % if cls_short_desc:
+${cls_short_desc}
 
-| Name | Type | Description | Default |
-|---|---|---|---|
-        % for p in cls.parsed_docstring.params:
-| ${p.arg_name} | ${p.type_name} | ${p.description.replace('\n', '<br>')} | ${p.default} |
+    % endif
+    % if cls_long_desc:
+${cls_long_desc}
+
+    % endif
+
+    % if cls_params:
+${h4("Arguments")}
+
+| Name |  Description |
+|---|---|
+        % for p in cls_params:
+| ${p.arg_name} | ${p.description.replace('\n', '<br>')} |
         % endfor
     % endif
+
+    % if cls_call_args:
+${h4("Call arguments")}
+
+| Name |  Description |
+|---|---|
+        % for p in cls_call_args:
+| ${p.arg_name} | ${p.description.replace('\n', '<br>')} |
+        % endfor
+    % endif
+
+    % if cls_call_ret:
+${h4("Call returns")}
+
+| Type | Description |
+|---|---|
+      % if isinstance(cls_call_ret, list):
+        % for p in cls_call_ret:
+| ${p.type_name} | ${p.description.replace('\n', '<br>')} |
+        % endfor
+      % else:
+| ${cls_call_ret.type_name} | ${cls_call_ret.description.replace('\n', '<br>')} |
+      % endif
+    % endif
+
 % else:
 ${cls.docstring}
 % endif
